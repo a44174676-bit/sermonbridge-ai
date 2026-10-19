@@ -1,0 +1,52 @@
+{
+  "name": "sermonbridge-ai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:rls": "node --test tests/database/rls.test.mjs",
+    "test:operations": "playwright test --config playwright.operations.config.ts",
+    "test:services": "node scripts/local-services.mjs",
+    "test:gateway": "node scripts/test-gateway.mjs",
+    "test:seed": "node scripts/seed-test-users.mjs",
+    "test:ai:db": "tsx --test tests/database/ai.integration.ts tests/database/migration.test.mjs",
+    "test:ai:live": "tsx scripts/verify-openai.mts",
+    "db:phase2b:local": "node scripts/apply-phase2b.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0",
+    "bible-passage-reference-parser": "^4.0.0",
+    "next": "16.4.2",
+    "openai": "^7.39.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^24.19.2",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.2",
+    "pg": "^8.23.1",
+    "prettier": "^3.9.10",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
