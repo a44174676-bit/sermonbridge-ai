@@ -8,10 +8,12 @@ export function sceneImageModel() { return MODEL; }
 export function sceneImageAdmin() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key || !process.env.GEMINI_API_KEY) throw new Error("IMAGE_NOT_CONFIGURED");
+  if (!url || !key) throw new Error("IMAGE_STORAGE_NOT_CONFIGURED");
   return createClient(url,key,{auth:{autoRefreshToken:false,persistSession:false}});
 }
 export async function generateScenePng(description: string): Promise<Uint8Array> {
+  if (process.env.IMAGE_GENERATION_ENABLED !== "true") throw new Error("IMAGE_GENERATION_DISABLED");
+  if (!process.env.GEMINI_API_KEY) throw new Error("IMAGE_API_KEY_MISSING");
   if (!description || description.length > 3000) throw new Error("INVALID_DESCRIPTION");
   const controller = new AbortController();
   const timer = setTimeout(()=>controller.abort(),85000);
