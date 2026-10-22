@@ -16,9 +16,10 @@ export default async function SceneImagesPage({params}:{params:Promise<{sermonId
  const scenes=analysis?.source_version===sermon.source_version && Array.isArray(analysis.data?.scenes)?
  analysis.data.scenes.filter((s:unknown)=>typeof s==="object"&&s!==null&&"visual_description" in s) as Array<{scene_id:number;summary:string;visual_description:string}>:[];
  const {data:rows}=await db.from("sermon_scene_images").select("id,scene_id,status,storage_path,created_at,error_code,source_version,analysis_version").eq("sermon_id",sermon.id).order("created_at",{ascending:false}).limit(30);
- const admin=sceneImageAdmin();
+ let admin:ReturnType<typeof sceneImageAdmin>|null=null;
+ try{admin=sceneImageAdmin();}catch{/* Read-only page still renders when server secret is not configured. */}
  const images=await Promise.all((rows??[]).filter(i=>i.source_version===sermon.source_version&&i.analysis_version===sermon.analysis_version).map(async i=>{
-  const signed=i.storage_path?await admin.storage.from(SCENE_IMAGE_BUCKET).createSignedUrl(i.storage_path,300):null;
+  const signed=i.storage_path&&admin?await admin.storage.from(SCENE_IMAGE_BUCKET).createSignedUrl(i.storage_path,300):null;
   return {id:i.id,scene_id:i.scene_id,status:i.status,created_at:i.created_at,error_code:i.error_code,url:signed?.data?.signedUrl??null};
  }));
  return <><header><Link href="/dashboard" className="brand">SermonBridge <span>AI</span></Link><nav><Link href="/dashboard">설교 관리</Link></nav></header>
