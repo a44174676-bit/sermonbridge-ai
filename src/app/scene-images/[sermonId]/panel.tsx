@@ -1,6 +1,6 @@
 "use client";
 import {useActionState} from "react";
-import {approveSceneImage,createSceneImage,type ImageActionResult} from "./actions";
+import {approveSceneImage,createSceneImage,type ImageActionResult} from "../actions";
 type ImageInfo={id:string;scene_id:number;status:string;url:string|null;created_at:string;error_code:string|null};
 type SceneInfo={scene_id:number;summary:string;visual_description:string};
 const initial:ImageActionResult={};
