@@ -9,6 +9,7 @@ export type ImageActionResult={error?:string;success?:string};
 export async function createSceneImage(_state:ImageActionResult,form:FormData):Promise<ImageActionResult>{
  const parsed=input.safeParse(Object.fromEntries(form));
  if(!parsed.success)return{error:"설교·장면 정보를 확인해 주세요."};
+ if(process.env.IMAGE_GENERATION_ENABLED!=="true")return{error:"이미지 생성 기능은 비용·보안 검증 후 활성화됩니다."};
  let admin:ReturnType<typeof sceneImageAdmin>;
  try{admin=sceneImageAdmin();}catch{return{error:"서버 이미지 생성 설정이 완료되지 않았습니다."};}
  const {db,user}=await requireUser();
