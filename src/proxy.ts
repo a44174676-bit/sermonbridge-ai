@@ -25,7 +25,21 @@ export async function proxy(request: NextRequest) {
     },
   });
   // Refresh session, never trust getSession() for authorization. Pages/actions also call getUser().
-  await client.auth.getUser();
+  try {
+    await client.auth.getUser();
+  } catch (error) {
+    // Supabase network failures must not turn the login screen into a 500.
+    // Fail closed: do not create a session or grant access; route-level
+    // requireUser() still performs authoritative authorization.
+    console.error("AUTH_REFRESH_FAILED",
+      error instanceof Error ? error.name : "UNKNOWN_ERROR");
+    if (request.nextUrl.pathname !== "/login") {
+      const loginUrl = new URL("/login", request.url);
+      const redirected = NextResponse.redirect(loginUrl);
+      redirected.headers.set("Cache-Control", "private, no-store");
+      return redirected;
+    }
+  }
   response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
